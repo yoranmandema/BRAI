@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using Skrypt;
 
@@ -8,29 +7,34 @@ public class SkryptBehaviour : MonoBehaviour {
     public TextAsset file;
 
     private readonly SkryptEngine _engine;
+    private IFunction _updateFunction;
 
     public SkryptBehaviour () {
         _engine = new SkryptEngine();
+        _engine.ErrorHandler = new ErrorHandler(_engine);
+
+        _engine.SetValue("print", new Action<object>(print));
     }
 
     private void Execute (string code) {
         try {
-            var program = _engine.ParseProgram(code, new Skrypt.Compiling.ParserOptions {
-                Tolerant = true
-            });
-
-            _engine.Execute(program);
+            _engine.Execute(code);
         } catch (SkryptException e) {
-
+            Debug.LogError(e);
         }
     }
 
     void Start() {
         _engine.Execute(file.text);
+
+        var hasUpdate = _engine.TryGetValue("Update", out SkryptObject update);
+
+        if (update is FunctionInstance functionInstance) {
+            _updateFunction = functionInstance.Function;
+        }
     }
 
-    // Update is called once per frame
     void Update() {
-
+        _updateFunction.Run(_engine, null, Arguments.Empty);
     }
 }
