@@ -11,5 +11,10 @@ public static class SkryptTypeConverter {
             (float)vector3Instance.Components[2]
             );
     }
-
+    public static Vector3 FromSkryptVector2(Vector2Instance vector2Instance) {
+        return new Vector3(
+            (float)vector2Instance.Components[0],
+            (float)vector2Instance.Components[1]
+            );
+    }
 }

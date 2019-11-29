@@ -5,29 +5,29 @@ using Skrypt;
 public class SkryptBehaviour : MonoBehaviour {
 
     public TextAsset file;
+    public readonly SkryptEngine engine;
 
-    private readonly SkryptEngine _engine;
     private IFunction _updateFunction;
 
-    public SkryptBehaviour () {
-        _engine = new SkryptEngine();
-        _engine.ErrorHandler = new ErrorHandler(_engine);
+    public SkryptBehaviour() {
+        engine = SkryptEngineFactory.CreateEngine();
 
-        _engine.SetValue("print", new Action<object>(print));
+        engine.SetValue("print", new Action<object>(print));
     }
 
-    private void Execute (string code) {
+    private void Execute(string code) {
         try {
-            _engine.Execute(code);
-        } catch (SkryptException e) {
+            engine.Execute(code);
+        }
+        catch (SkryptException e) {
             Debug.LogError(e);
         }
     }
 
     void Start() {
-        _engine.Execute(file.text);
+        engine.Execute(file.text);
 
-        var hasUpdate = _engine.TryGetValue("Update", out SkryptObject update);
+        var hasUpdate = engine.TryGetValue("Update", out SkryptObject update);
 
         if (update is FunctionInstance functionInstance) {
             _updateFunction = functionInstance.Function;
@@ -35,6 +35,7 @@ public class SkryptBehaviour : MonoBehaviour {
     }
 
     void Update() {
-        _updateFunction.Run(_engine, null, Arguments.Empty);
+        if (_updateFunction != null)
+            _updateFunction.Run(engine, null, Arguments.Empty);
     }
 }

@@ -1,5 +1,7 @@
-print("Hello world!")
-
-fn Update () {
-	print("Hello world!")
-}
+Move(
+	Vector(
+		Math.Random(-10,10),
+		0,
+		0
+	)
+)
