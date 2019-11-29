@@ -17,4 +17,8 @@ public static class SkryptTypeConverter {
             (float)vector2Instance.Components[1]
             );
     }
+
+    public static Vector3Instance ToSkryptVector3(SkryptEngine engine, Vector3 vector3) {
+        return engine.CreateVector3(vector3.x, vector3.y, vector3.z);
+    }
 }

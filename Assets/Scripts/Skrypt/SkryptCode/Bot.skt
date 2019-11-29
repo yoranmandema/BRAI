@@ -1,7 +1,20 @@
-Move(
-	Vector(
-		Math.Random(-10,10),
-		0,
-		0
-	)
-)
+
+i = 0
+I = 8
+PI2 = Math.PI * 2
+
+fn Update () {
+	if (i >= I) i = 0
+
+	x = i / I
+
+	direction = Vector(
+			Math.Sin(x * PI2), 
+			0, 
+			Math.Cos(x * PI2)
+		)
+
+	Raycast(direction * 10)
+
+	i++
+}
